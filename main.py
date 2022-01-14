@@ -7,6 +7,7 @@ clientBalances = [7000,9000,10000,20000,150150010,250000,25250020]
 clientDeposition = 0
 clientWithdrawal = 0
 clientBalance=0
+
 #data
 
 
@@ -97,17 +98,42 @@ def withdraw():
    wname_entry = Entry(new2, font=('calibre', 10, 'normal'), width=60)
    wlabel2 = Label(new2, text="Please enter your PIN here")
    wpin_entry = Entry(new2, font=('calibre', 10, 'normal'), width=60)
+
+
    def wsubmit(a, b):
       wcounter = 0
       for i in range(len(clientName)):
          if clientName[i]==a and clientPins[i]==b:
-            messagebox.showinfo("hey", "howdy")
+            global withdrawcount
+            withdrawcount = i
+
+            withdrawmoney()
             wcounter +=1
       if wcounter < 1:
          messagebox.showerror("warning", "the client details don't match! please ensure that both the name and pin are correctly entered")
    wsubmitbutton= Button(new2, text = 'submit', command=lambda:wsubmit(wname_entry.get(), wpin_entry.get()))
 
+   def withdrawmoney():
+      new3 = Toplevel(root)
+      new3.geometry("750x500")
+      new3.title("Withdraw money")
+      wlabel3 = Label(new3, text="Please enter the amount you want to withdraw from your account")
+      wamount_entry = Entry(new3, font=('calibre', 10, 'normal'), width=60)
+      wamount_entry.insert(0, 0)
 
+      def wpasser():
+         if int(wamount_entry.get()) < clientBalances[withdrawcount]:
+            clientBalances[withdrawcount] -= int(wamount_entry.get())
+            messagebox.showinfo(title='success', message=f'Your withdrawal was successful.You now have INR {clientBalances[withdrawcount]} in your account')
+
+         else:
+            messagebox.showerror(title="Alert", message="You don't have enough money in your account to complete this transaction")
+
+      wamount_submit = Button(new3, text = 'submit', command = wpasser)
+
+      wlabel3.pack()
+      wamount_entry.pack()
+      wamount_submit.pack()
 
 
 
@@ -128,22 +154,108 @@ def withdraw():
 #deposit money window
 
 def deposit():
-   new = Toplevel(root)
-   new.geometry("750x250")
-   new.title("New Window")
 
-   label1 = Label(new, text="Hey, Howdy?", font=('Helvetica 17 bold'))
-   label1.pack(padx = 30)
+      new3 = Toplevel(root)
+      new3.geometry("750x500")
+      new3.title("Deposit money")
+
+      label1 = Label(new3, text="Deposit money into your account", font=('Helvetica 17 bold'))
+      label1.pack(padx=30)
+
+      ####################################################
+
+      dlabel1 = Label(new3, text="Please enter the name of client")
+      dname_entry = Entry(new3, font=('calibre', 10, 'normal'), width=60)
+      dlabel2 = Label(new3, text="Please enter your PIN here")
+      dpin_entry = Entry(new3, font=('calibre', 10, 'normal'), width=60)
+
+      def dsubmit(a, b):
+         dcounter = 0
+         for i in range(len(clientName)):
+            if clientName[i] == a and clientPins[i] == b:
+               global depositcount
+               depositcount = i
+
+               depositmoney()
+               dcounter += 1
+         if dcounter < 1:
+            messagebox.showerror("warning",
+                                 "the client details don't match! please ensure that both the name and pin are correctly entered")
+
+      dsubmitbutton = Button(new3, text='submit', command=lambda: dsubmit(dname_entry.get(), dpin_entry.get()))
+
+      def depositmoney():
+         new4 = Toplevel(root)
+         new4.geometry("750x500")
+         new4.title("Deposit money")
+         dlabel3 = Label(new4, text="Please enter the amount you want to deposit into your account")
+         damount_entry = Entry(new4, font=('calibre', 10, 'normal'), width=60)
+         damount_entry.insert(0, 0)
+
+         def dpasser():
+            clientBalances[depositcount] += int(damount_entry.get())
+            messagebox.showinfo(title='success', message=f"Your deposit was successful. You now have INR {clientBalances[depositcount]} in your account")
+            #print(clientBalances[depositcount])
+           # else:
+           #    messagebox.showerror(title="Alert",
+           #                         message="You don't have enough money in your account to complete this transaction")
+
+         damount_submit = Button(new4, text='submit', command=dpasser)
+
+         dlabel3.pack()
+         damount_entry.pack()
+         damount_submit.pack()
+
+      dlabel1.pack(pady=30)
+      dname_entry.pack()
+      dlabel2.pack(pady=30)
+      dpin_entry.pack()
+      dsubmitbutton.pack(pady=30)
+
 
 #check balance window
 
 def balance():
-   new = Toplevel(root)
-   new.geometry("750x250")
-   new.title("New Window")
+   new5 = Toplevel(root)
+   new5.geometry("750x500")
+   new5.title("Check Balance")
 
-   label1 = Label(new, text="Hey, Howdy?", font=('Helvetica 17 bold'))
+   label1 = Label(new5, text="Check your account balance", font=('Helvetica 17 bold'))
    label1.pack(padx = 30)
+
+   blabel1 = Label(new5, text="Please enter the name of client")
+   bname_entry = Entry(new5, font=('calibre', 10, 'normal'), width=60)
+   blabel2 = Label(new5, text="Please enter your PIN here")
+   bpin_entry = Entry(new5, font=('calibre', 10, 'normal'), width=60)
+
+   def bsubmit(a, b):
+      bcounter = 0
+      for i in range(len(clientName)):
+         if clientName[i] == a and clientPins[i] == b:
+            global balancecount
+            balancecount = i
+
+            messagebox.showinfo(title="Balance", message=f"Your account balance is INR {clientBalances[i]}")
+            bcounter += 1
+      if bcounter < 1:
+         messagebox.showerror("warning",
+                              "the client details don't match! please ensure that both the name and pin are correctly entered")
+
+   bsubmitbutton = Button(new5, text='submit', command=lambda: bsubmit(bname_entry.get(), bpin_entry.get()))
+
+   #blabel1.pack()
+   #bamount_entry.pack()
+   #bamount_submit.pack()
+
+
+   blabel1.pack(pady=30)
+   bname_entry.pack()
+   blabel2.pack(pady=30)
+   bpin_entry.pack()
+   bsubmitbutton.pack(pady=30)
+
+
+
 
 
 #loan window
@@ -193,7 +305,9 @@ loan.grid(row = 2, column = 1, padx = 70, pady = 20)
 loanstatus = Button(root, text = "Check your loan status", font = ("Helvetica 17 bold", 10), height = 5, width = 30, command = loans)
 loanstatus.grid(row = 2, column = 2,  pady = 20)
 #button7
-quitbank = Button(root, text = "Quit", font = ("Helvetica 17 bold", 10), height = 5, width = 30)
+def quitter():
+   root.destroy()
+quitbank = Button(root, text = "Quit", font = ("Helvetica 17 bold", 10), height = 5, width = 30, command = quitter)
 quitbank.grid(row = 3, column = 1, padx = 70, pady = 50)
 
 
